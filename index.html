@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="hi">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#101a35"><meta name="description" content="Universal learning hub for every class, exam and skill."><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icon.svg" type="image/svg+xml"><title>Studyverse — Universal Learning Hub</title>
+<style>
+:root{--bg:#0b1225;--panel:#121d38;--panel2:#192747;--text:#eef3ff;--muted:#a8b6d4;--accent:#7c9cff;--line:#2b3b60;--good:#54d6a0}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(150deg,#0b1225,#101c39 55%,#171c3a);color:var(--text);font:15px system-ui,-apple-system,Segoe UI,sans-serif}
+button,input,select,textarea{font:inherit}button{cursor:pointer;border:0;border-radius:12px;padding:11px 14px;background:var(--accent);color:#071127;font-weight:700}
+button.secondary{background:#26375e;color:var(--text);border:1px solid var(--line)}button.ghost{background:transparent;color:var(--muted);border:1px solid var(--line)}
+header{padding:22px 18px 14px;max-width:1050px;margin:auto}header .top{display:flex;justify-content:space-between;align-items:center;gap:10px}.brand{font-weight:900;font-size:22px;letter-spacing:.4px}.brand span{color:#9bb3ff}.tag{color:var(--muted);font-size:12px;margin-top:4px}
+main{max-width:1050px;margin:auto;padding:0 16px 100px}.hero{background:linear-gradient(120deg,#253c71,#493a79);border:1px solid #52649b;border-radius:22px;padding:22px;margin:12px 0 18px}.hero h1{margin:0 0 8px;font-size:26px}.hero p{color:#d5def6;margin:0 0 16px}.search{display:flex;gap:8px}.search input{flex:1}
+input,select,textarea{width:100%;background:#0c1630;color:var(--text);border:1px solid var(--line);border-radius:11px;padding:12px;outline:none}input::placeholder,textarea::placeholder{color:#7485aa}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.tile,.card{background:rgba(18,29,56,.95);border:1px solid var(--line);border-radius:17px;padding:15px}.tile{min-height:108px;text-align:left;color:var(--text)}.tile b{display:block;margin:8px 0 3px}.tile small,.muted{color:var(--muted)}.emoji{font-size:23px}
+h2{font-size:19px;margin:22px 0 11px}.row{display:flex;gap:9px;align-items:center}.row>*{min-width:0}.between{justify-content:space-between}.stack{display:grid;gap:10px}.section{display:none}.section.active{display:block}
+nav{position:fixed;bottom:0;left:0;right:0;background:#0a1123ee;backdrop-filter:blur(14px);border-top:1px solid var(--line);display:flex;justify-content:center;z-index:5}nav .inner{width:min(1050px,100%);display:flex;justify-content:space-around;padding:9px 5px calc(9px + env(safe-area-inset-bottom))}nav button{background:transparent;color:var(--muted);padding:7px 9px;font-size:12px}nav button.active{color:#a9bcff;background:#1a2a50}
+.listitem{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid var(--line)}.listitem:last-child{border:0}.listitem small{display:block;color:var(--muted);margin-top:3px;overflow-wrap:anywhere}
+.pill{font-size:11px;color:#b8c9ff;background:#26375e;padding:4px 8px;border-radius:20px;white-space:nowrap}.bar{height:8px;border-radius:20px;background:#26375e;overflow:hidden}.bar i{display:block;height:100%;background:var(--good)}
+.file{padding:12px;background:#0d1831;border:1px solid var(--line);border-radius:12px;margin:8px 0}.file strong{display:block;overflow-wrap:anywhere}.file small{color:var(--muted)}
+label{font-size:13px;color:var(--muted);display:block;margin:8px 0 5px}.two{display:grid;grid-template-columns:1fr 1fr;gap:9px}.notice{background:#1d2a48;border:1px solid #3a4b70;border-radius:13px;padding:12px;color:#d1dcf5;font-size:13px;line-height:1.5}
+.empty{padding:20px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:14px}
+@media(min-width:700px){.grid{grid-template-columns:repeat(4,minmax(0,1fr))}.hero h1{font-size:32px}}
+</style></head>
+<body>
+<header><div class="top"><div><div class="brand">🌍 STUDY<span>VERSE</span></div><div class="tag">One home for every kind of learning</div></div><button class="secondary" id="installBtn" style="padding:8px 10px;font-size:12px" hidden>Install App</button><span class="pill">PWA • BETA</span></div></header>
+<main>
+<section id="home" class="section active">
+ <div class="hero"><h1>Learn Anything. Anytime.</h1><p>Class 1 से लेकर competitive exams, college और skills तक — अपनी पढ़ाई एक जगह संभालो।</p><div class="search"><input id="globalSearch" placeholder="क्लास, विषय, PDF या लिंक खोजें…"><button onclick="searchEverywhere()">खोजें</button></div></div>
+ <h2>Explore learning</h2><div class="grid">
+ <button class="tile" onclick="openSection('library')"><span class="emoji">🎒</span><b>School · Class 1–12</b><small>सभी बोर्ड और विषय</small></button>
+ <button class="tile" onclick="openSection('library')"><span class="emoji">🎓</span><b>College & University</b><small>Degree और semester</small></button>
+ <button class="tile" onclick="openSection('library')"><span class="emoji">🏆</span><b>Competitive Exams</b><small>UPSC, SSC, NEET, JEE…</small></button>
+ <button class="tile" onclick="openSection('library')"><span class="emoji">💻</span><b>Skills & Courses</b><small>Coding, AI, languages…</small></button>
+ </div>
+ <h2>Study tools</h2><div class="grid">
+ <button class="tile" onclick="openSection('files')"><span class="emoji">📂</span><b>Smart File Manager</b><small>PDF और documents sort करें</small></button>
+ <button class="tile" onclick="openSection('videos')"><span class="emoji">▶️</span><b>Video Library</b><small>Lecture links एक जगह</small></button>
+ <button class="tile" onclick="openSection('planner')"><span class="emoji">📅</span><b>Study Planner</b><small>Daily targets</small></button>
+ <button class="tile" onclick="openSection('notes')"><span class="emoji">📝</span><b>My Notes</b><small>अपने notes लिखें</small></button>
+ </div>
+ <h2>आज की प्रगति</h2><div class="card"><div class="row between"><b id="progressText">0 / 0 tasks complete</b><span class="pill" id="progressPct">0%</span></div><div class="bar" style="margin-top:10px"><i id="progressBar" style="width:0%"></i></div></div>
+</section>
+<section id="files" class="section">
+ <h2>📂 Smart AI File Manager</h2><p class="muted">फाइल चुनें — Studyverse नाम और उपलब्ध PDF टेक्स्ट के आधार पर संभावित विषय/क्लास का सुझाव देगा।</p>
+ <div class="card stack"><input id="fileInput" type="file" multiple accept=".pdf,.doc,.docx,.ppt,.pptx,.txt,.jpg,.png"><button onclick="document.getElementById('fileInput').click()">＋ फोन से फाइल चुनें</button><div class="notice">यह शुरुआती वेब वर्जन चुनी हुई फाइलों को इसी ब्राउज़र में रखता है। फोन की पूरी storage या WhatsApp folder को background में scan नहीं करता।</div></div>
+ <h2>Library folders</h2><div id="folderList" class="stack"></div><h2>All imported files</h2><div id="fileList"></div>
+</section>
+<section id="library" class="section"><h2>📚 Learning Library</h2><div class="notice">किसी भी class, subject या exam के लिए अपना resource जोड़ें। ऐप एक universal library है — किसी एक परीक्षा तक सीमित नहीं।</div>
+ <div class="card"><label>Resource title</label><input id="resTitle" placeholder="जैसे: Class 10 Maths - Algebra"><label>Class / Exam / Course</label><input id="resLevel" placeholder="जैसे: Class 10, SSC CGL, B.Com"><label>Subject</label><input id="resSubject" placeholder="जैसे: Maths, Physics, Reasoning"><label>Resource link</label><input id="resUrl" placeholder="https://…"><button style="margin-top:10px" onclick="addResource()">Save resource</button></div><div id="resourceList" class="card" style="margin-top:12px"></div>
+</section>
+<section id="videos" class="section"><h2>▶️ Video Library</h2><div class="card"><label>Lecture name</label><input id="videoTitle" placeholder="Chapter / lecture name"><label>YouTube या video URL</label><input id="videoUrl" placeholder="https://youtube.com/…"><button style="margin-top:10px" onclick="addVideo()">Add video</button></div><div id="videoList" class="card" style="margin-top:12px"></div></section>
+<section id="planner" class="section"><h2>📅 Study Planner</h2><div class="card"><label>आज का target</label><div class="row"><input id="taskInput" placeholder="जैसे: 20 reasoning questions"><button onclick="addTask()">Add</button></div></div><div id="taskList" class="card" style="margin-top:12px"></div></section>
+<section id="notes" class="section"><h2>📝 My Notes</h2><div class="card"><label>Note title</label><input id="noteTitle" placeholder="विषय / chapter"><label>Notes</label><textarea id="noteBody" rows="6" placeholder="यहाँ अपने notes लिखें…"></textarea><button style="margin-top:10px" onclick="addNote()">Save note</button></div><div id="noteList" class="stack" style="margin-top:12px"></div></section>
+<section id="settings" class="section"><h2>⚙️ Settings & connections</h2><div class="card stack"><b>Import sources</b><div class="listitem">📱 Phone Storage <span class="pill">File picker</span></div><div class="listitem">☁️ Studyverse Uploads <span class="pill">Available</span></div><div class="listitem">Google Drive <span class="pill">Connect integration required</span></div><div class="listitem">WhatsApp Downloads <span class="pill">Select folder manually</span></div><div class="notice">Google Drive sign-in, Android folder permissions, automatic background sync और AI/OCR classification को production app में secure backend/API और explicit permissions के साथ जोड़ना होगा। इस demo में ये connections अभी सक्रिय नहीं हैं.</div><button class="secondary" onclick="exportData()">Export my Studyverse data</button><button class="ghost" onclick="clearData()">Clear local demo data</button></div></section>
+</main>
+<nav><div class="inner"><button class="active" data-tab="home" onclick="openSection('home')">🏠<br>Home</button><button data-tab="files" onclick="openSection('files')">📂<br>Files</button><button data-tab="library" onclick="openSection('library')">📚<br>Library</button><button data-tab="planner" onclick="openSection('planner')">📅<br>Planner</button><button data-tab="settings" onclick="openSection('settings')">⚙️<br>More</button></div></nav>
+<script>
+const $=id=>document.getElementById(id);
+const get=k=>JSON.parse(localStorage.getItem('sv_'+k)||'[]');
+const put=(k,v)=>{localStorage.setItem('sv_'+k,JSON.stringify(v));};
+function openSection(id){document.querySelectorAll('.section').forEach(x=>x.classList.toggle('active',x.id===id));document.querySelectorAll('nav button').forEach(x=>x.classList.toggle('active',x.dataset.tab===id));render();}
+function classify(name){
+ const s=name.toLowerCase();
+ const rules=[
+  [/class.?1[ -]?5|grade.?[1-5]|primary/,'School / Class 1–5'],
+  [/class.?[6-8]|grade.?[6-8]|middle/,'School / Class 6–8'],
+  [/class.?9|class.?10|class.?11|class.?12|cbse|icse|ncert|board/,'School / Class 9–12'],
+  [/upsc|ias|pcs/,'Competitive / UPSC & State PCS'],
+  [/ssc|cgl|chsl|gd|mts/,'Competitive / SSC'],
+  [/railway|rrb|ntpc/,'Competitive / Railway'],
+  [/neet|biology/,'Science / Biology & NEET'],
+  [/jee|physics|chemistry/,'Science / Physics & Chemistry'],
+  [/math|algebra|geometry|quant/,'Mathematics'],
+  [/reasoning|aptitude/,'Competitive / Reasoning'],
+  [/english|hindi|grammar|language/,'Languages'],
+  [/b.?tech|bsc|bcom|ba|semester|university|college/,'College & University'],
+  [/coding|python|programming|computer|ai|machine/,'Skills / Computer & AI']
+ ];
+ for(const [re,folder] of rules)if(re.test(s))return folder;
+ return 'Unsorted / Review';
+}
+$('fileInput').addEventListener('change',e=>{
+ const arr=get('files');
+ [...e.target.files].forEach(f=>arr.push({id:Date.now()+Math.random(),name:f.name,size:f.size,type:f.type||'File',folder:classify(f.name),added:new Date().toLocaleDateString('en-IN')}));
+ put('files',arr);e.target.value='';render();
+});
+function addResource(){let a=get('resources');if(!$('resTitle').value.trim())return alert('Resource title लिखें');a.push({title:$('resTitle').value,level:$('resLevel').value,subject:$('resSubject').value,url:$('resUrl').value});put('resources',a);['resTitle','resLevel','resSubject','resUrl'].forEach(x=>$(x).value='');render();}
+function addVideo(){let a=get('videos');if(!$('videoTitle').value.trim()||!$('videoUrl').value.trim())return alert('नाम और URL दोनों लिखें');a.push({title:$('videoTitle').value,url:$('videoUrl').value});put('videos',a);$('videoTitle').value=$('videoUrl').value='';render();}
+function addTask(){let v=$('taskInput').value.trim();if(!v)return;let a=get('tasks');a.push({title:v,done:false});put('tasks',a);$('taskInput').value='';render();}
+function addNote(){let t=$('noteTitle').value.trim(),b=$('noteBody').value.trim();if(!t||!b)return alert('Title और notes लिखें');let a=get('notes');a.unshift({title:t,body:b,date:new Date().toLocaleDateString('en-IN')});put('notes',a);$('noteTitle').value=$('noteBody').value='';render();}
+function render(){
+ const files=get('files'),folders=[...new Set(files.map(f=>f.folder))];
+ $('folderList').innerHTML=folders.length?folders.map(f=>`<div class="listitem"><div>📁 <b>${esc(f)}</b><small>${files.filter(x=>x.folder===f).length} files</small></div><span class="pill">Auto category</span></div>`).join(''):'<div class="empty">अभी कोई फाइल नहीं। ऊपर से PDFs चुनें।</div>';
+ $('fileList').innerHTML=files.length?files.slice().reverse().map(f=>`<div class="file"><strong>📄 ${esc(f.name)}</strong><small>${esc(f.folder)} · ${formatSize(f.size)} · ${f.added}</small></div>`).join(''):'<div class="empty">No files imported yet</div>';
+ $('resourceList').innerHTML=get('resources').map(x=>`<div class="listitem"><div><b>${esc(x.title)}</b><small>${esc(x.level)} · ${esc(x.subject)}</small></div>${safeUrl(x.url)?`<a target="_blank" rel="noopener" href="${esc(x.url)}">Open ↗</a>`:''}</div>`).join('')||'<div class="empty">अभी कोई resource नहीं।</div>';
+ $('videoList').innerHTML=get('videos').map(x=>`<div class="listitem"><div><b>${esc(x.title)}</b><small>${esc(x.url)}</small></div>${safeUrl(x.url)?`<a target="_blank" rel="noopener" href="${esc(x.url)}">Watch ↗</a>`:''}</div>`).join('')||'<div class="empty">अभी कोई video नहीं।</div>';
+ const tasks=get('tasks');$('taskList').innerHTML=tasks.map((x,i)=>`<div class="listitem"><label style="margin:0;display:flex;gap:9px;align-items:center;color:var(--text)"><input style="width:auto" type="checkbox" ${x.done?'checked':''} onchange="toggleTask(${i},this.checked)"><span style="${x.done?'text-decoration:line-through;color:var(--muted)':''}">${esc(x.title)}</span></label><button class="ghost" onclick="removeTask(${i})">×</button></div>`).join('')||'<div class="empty">आज का पहला target जोड़ें।</div>';
+ $('noteList').innerHTML=get('notes').map(x=>`<div class="card"><b>${esc(x.title)}</b><small class="muted"> · ${x.date}</small><p style="white-space:pre-wrap">${esc(x.body)}</p></div>`).join('')||'<div class="empty">अभी कोई notes नहीं।</div>';
+ const done=tasks.filter(x=>x.done).length,pct=tasks.length?Math.round(done/tasks.length*100):0;$('progressText').textContent=`${done} / ${tasks.length} tasks complete`;$('progressPct').textContent=pct+'%';$('progressBar').style.width=pct+'%';
+}
+function toggleTask(i,v){let a=get('tasks');a[i].done=v;put('tasks',a);render()}function removeTask(i){let a=get('tasks');a.splice(i,1);put('tasks',a);render()}
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function safeUrl(s){try{return ['http:','https:'].includes(new URL(s).protocol)}catch{return false}}
+function formatSize(n){return n<1024?n+' B':n<1048576?(n/1024).toFixed(1)+' KB':(n/1048576).toFixed(1)+' MB'}
+function searchEverywhere(){let q=$('globalSearch').value.toLowerCase();if(!q)return;let all=[...get('files').map(x=>x.name+' '+x.folder),...get('resources').map(x=>x.title+' '+x.subject+' '+x.level),...get('videos').map(x=>x.title)];alert(all.filter(x=>x.toLowerCase().includes(q)).join('\\n')||'कोई matching item नहीं मिला।');}
+function exportData(){let data={files:get('files'),resources:get('resources'),videos:get('videos'),tasks:get('tasks'),notes:get('notes')};let blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='studyverse-backup.json';a.click();URL.revokeObjectURL(a.href);}
+function clearData(){if(confirm('इस ब्राउज़र का Studyverse demo data हटाएँ?')){['files','resources','videos','tasks','notes'].forEach(k=>localStorage.removeItem('sv_'+k));render();}}
+render();
+
+let installPrompt=null;
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();installPrompt=e;$('installBtn').hidden=false;});
+$('installBtn').addEventListener('click',async()=>{if(!installPrompt){alert('Chrome menu (⋮) → Add to Home screen / Install app चुनें।');return;}installPrompt.prompt();await installPrompt.userChoice;installPrompt=null;$('installBtn').hidden=true;});
+if('serviceWorker' in navigator && location.protocol.startsWith('http')) window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
+</script></body></html>

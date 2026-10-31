@@ -1,0 +1,20 @@
+STUDYVERSE — Android APK Builder (फोन से)
+
+यह पैकेज Android ऐप का source + cloud APK build workflow है। APK इस ZIP के अंदर पहले से नहीं है। GitHub Actions उसे ऑनलाइन build करेगा।
+
+फोन से:
+1) ZIP Extract करें।
+2) github.com पर अकाउंट बनाएं/लॉगिन करें।
+3) नया Repository बनाएं: studyverse-android (Public या Private)।
+4) Repository में Add file → Upload files चुनें।
+5) इस ZIP को Extract करके उसके अंदर की सभी फाइलें/फोल्डर upload करें। ध्यान दें: .github फोल्डर भी upload होना चाहिए।
+6) Commit changes करें।
+7) Repository → Actions खोलें। "Build Studyverse APK" workflow चुनें → Run workflow दबाएं।
+8) Build पूरा होने पर workflow run खोलें → नीचे Artifacts में "Studyverse-debug-APK" डाउनलोड करें।
+9) ZIP extract करें; app-debug.apk पर टैप करके install करें। Android पूछे तो Chrome/Files के लिए "Install unknown apps" अनुमति दें।
+
+ध्यान:
+- यह debug APK है, Play Store release/signed production APK नहीं।
+- GitHub Actions की उपलब्धता/limits आपके GitHub account पर निर्भर हैं।
+- अभी Studyverse prototype UI WebView में चलता है। Native file scanning, WhatsApp/Drive OAuth, AI/OCR और cloud sync आगे implement करने होंगे।
+- किसी भी अनजान साइट पर अपनी Google/GitHub password न दें। केवल github.com इस्तेमाल करें।
