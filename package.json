@@ -2,5 +2,11 @@
   "name": "studyverse-android",
   "version": "1.0.0",
   "private": true,
-  "scripts": {
-    "android:prepare": "cap add
+  "dependencies": {
+    "@capacitor/android": "^6.2.1",
+    "@capacitor/core": "^6.2.1"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^6.2.1"
+  }
+}
