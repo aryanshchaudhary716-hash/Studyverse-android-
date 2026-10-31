@@ -1,0 +1,6 @@
+{
+  "name": "studyverse-android",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "android:prepare": "cap add
