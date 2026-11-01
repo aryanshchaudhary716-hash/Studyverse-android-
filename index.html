@@ -43,7 +43,7 @@ label{font-size:13px;color:var(--muted);display:block;margin:8px 0 5px}.two{disp
 <section id="files" class="section">
  <h2>📂 Smart AI File Manager</h2><p class="muted">फाइल चुनें — Studyverse नाम और उपलब्ध PDF टेक्स्ट के आधार पर संभावित विषय/क्लास का सुझाव देगा।</p>
  <div class="card stack"><input id="fileInput" type="file" multiple accept=".pdf,.doc,.docx,.ppt,.pptx,.txt,.jpg,.png"><button onclick="document.getElementById('fileInput').click()">＋ फोन से फाइल चुनें</button><div class="notice">यह शुरुआती वेब वर्जन चुनी हुई फाइलों को इसी ब्राउज़र में रखता है। फोन की पूरी storage या WhatsApp folder को background में scan नहीं करता।</div></div>
- <h2>Library folders</h2><div id="folderList" class="stack"></div><h2>All imported files</h2><div id="fileList"></div>
+ <h2>Library folders</h2><div id="folderList" class="stack"></div><h2>All imported files</h2><div class="notice">फाइलें इस डिवाइस के IndexedDB में वास्तविक फाइल के रूप में सेव होंगी। इन्हें बाद में डाउनलोड या हटाया जा सकता है।</div><div id="fileList"></div>
 </section>
 <section id="library" class="section"><h2>📚 Learning Library</h2><div class="notice">किसी भी class, subject या exam के लिए अपना resource जोड़ें। ऐप एक universal library है — किसी एक परीक्षा तक सीमित नहीं।</div>
  <div class="card"><label>Resource title</label><input id="resTitle" placeholder="जैसे: Class 10 Maths - Algebra"><label>Class / Exam / Course</label><input id="resLevel" placeholder="जैसे: Class 10, SSC CGL, B.Com"><label>Subject</label><input id="resSubject" placeholder="जैसे: Maths, Physics, Reasoning"><label>Resource link</label><input id="resUrl" placeholder="https://…"><button style="margin-top:10px" onclick="addResource()">Save resource</button></div><div id="resourceList" class="card" style="margin-top:12px"></div>
@@ -79,9 +79,16 @@ function classify(name){
  for(const [re,folder] of rules)if(re.test(s))return folder;
  return 'Unsorted / Review';
 }
-$('fileInput').addEventListener('change',e=>{
+const DB_NAME='studyverse-vault',DB_STORE='assets';
+function openVault(){return new Promise((resolve,reject)=>{const req=indexedDB.open(DB_NAME,1);req.onupgradeneeded=()=>req.result.createObjectStore(DB_STORE,{keyPath:'id'});req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error);});}
+async function saveAsset(record,blob){const db=await openVault();return new Promise((resolve,reject)=>{const tx=db.transaction(DB_STORE,'readwrite');tx.objectStore(DB_STORE).put({...record,blob});tx.oncomplete=()=>{db.close();resolve();};tx.onerror=()=>{db.close();reject(tx.error);};});}
+async function getAsset(id){const db=await openVault();return new Promise((resolve,reject)=>{const req=db.transaction(DB_STORE).objectStore(DB_STORE).get(id);req.onsuccess=()=>{db.close();resolve(req.result);};req.onerror=()=>{db.close();reject(req.error);};});}
+async function removeAsset(id){const db=await openVault();return new Promise((resolve,reject)=>{const tx=db.transaction(DB_STORE,'readwrite');tx.objectStore(DB_STORE).delete(id);tx.oncomplete=()=>{db.close();resolve();};tx.onerror=()=>{db.close();reject(tx.error);};});}
+async function downloadStoredFile(id){try{const item=await getAsset(id);if(!item)return alert('फाइल नहीं मिली');const url=URL.createObjectURL(item.blob),a=document.createElement('a');a.href=url;a.download=item.name;a.click();setTimeout(()=>URL.revokeObjectURL(url),1500);}catch(e){alert('फाइल खोलने में समस्या: '+e.message);}}
+async function deleteStoredFile(id){if(!confirm('यह फाइल इस डिवाइस से हटाएँ?'))return;await removeAsset(id);put('files',get('files').filter(x=>x.id!==id));render();}
+$('fileInput').addEventListener('change',async e=>{
  const arr=get('files');
- [...e.target.files].forEach(f=>arr.push({id:Date.now()+Math.random(),name:f.name,size:f.size,type:f.type||'File',folder:classify(f.name),added:new Date().toLocaleDateString('en-IN')}));
+ for(const file of [...e.target.files]){const id=String(Date.now()+Math.random());const record={id,name:file.name,size:file.size,type:file.type||'File',folder:classify(file.name),added:new Date().toLocaleDateString('en-IN')};try{await saveAsset(record,file);arr.push(record);}catch(err){alert(file.name+' सेव नहीं हुई: '+err.message);}}
  put('files',arr);e.target.value='';render();
 });
 function addResource(){let a=get('resources');if(!$('resTitle').value.trim())return alert('Resource title लिखें');a.push({title:$('resTitle').value,level:$('resLevel').value,subject:$('resSubject').value,url:$('resUrl').value});put('resources',a);['resTitle','resLevel','resSubject','resUrl'].forEach(x=>$(x).value='');render();}
@@ -91,7 +98,7 @@ function addNote(){let t=$('noteTitle').value.trim(),b=$('noteBody').value.trim(
 function render(){
  const files=get('files'),folders=[...new Set(files.map(f=>f.folder))];
  $('folderList').innerHTML=folders.length?folders.map(f=>`<div class="listitem"><div>📁 <b>${esc(f)}</b><small>${files.filter(x=>x.folder===f).length} files</small></div><span class="pill">Auto category</span></div>`).join(''):'<div class="empty">अभी कोई फाइल नहीं। ऊपर से PDFs चुनें।</div>';
- $('fileList').innerHTML=files.length?files.slice().reverse().map(f=>`<div class="file"><strong>📄 ${esc(f.name)}</strong><small>${esc(f.folder)} · ${formatSize(f.size)} · ${f.added}</small></div>`).join(''):'<div class="empty">No files imported yet</div>';
+ $('fileList').innerHTML=files.length?files.slice().reverse().map(f=>`<div class="file"><strong>📄 ${esc(f.name)}</strong><small>${esc(f.folder)} · ${formatSize(f.size)} · ${f.added}</small><div class="row" style="margin-top:9px"><button class="secondary" onclick="downloadStoredFile('${esc(f.id)}')">Download</button><button class="ghost" onclick="deleteStoredFile('${esc(f.id)}')">Delete</button></div></div>`).join(''):'<div class="empty">No files imported yet</div>';
  $('resourceList').innerHTML=get('resources').map(x=>`<div class="listitem"><div><b>${esc(x.title)}</b><small>${esc(x.level)} · ${esc(x.subject)}</small></div>${safeUrl(x.url)?`<a target="_blank" rel="noopener" href="${esc(x.url)}">Open ↗</a>`:''}</div>`).join('')||'<div class="empty">अभी कोई resource नहीं।</div>';
  $('videoList').innerHTML=get('videos').map(x=>`<div class="listitem"><div><b>${esc(x.title)}</b><small>${esc(x.url)}</small></div>${safeUrl(x.url)?`<a target="_blank" rel="noopener" href="${esc(x.url)}">Watch ↗</a>`:''}</div>`).join('')||'<div class="empty">अभी कोई video नहीं।</div>';
  const tasks=get('tasks');$('taskList').innerHTML=tasks.map((x,i)=>`<div class="listitem"><label style="margin:0;display:flex;gap:9px;align-items:center;color:var(--text)"><input style="width:auto" type="checkbox" ${x.done?'checked':''} onchange="toggleTask(${i},this.checked)"><span style="${x.done?'text-decoration:line-through;color:var(--muted)':''}">${esc(x.title)}</span></label><button class="ghost" onclick="removeTask(${i})">×</button></div>`).join('')||'<div class="empty">आज का पहला target जोड़ें।</div>';
