@@ -115,6 +115,7 @@ async function importData(e){const file=e.target.files?.[0];if(!file)return;try{
 function clearData(){if(confirm('इस ब्राउज़र का Studyverse local data हटाएँ?')){['files','resources','videos','tasks','notes'].forEach(k=>localStorage.removeItem('sv_'+k));render();}}
 render();
 
+const shared=new URLSearchParams(location.search);const sharedTitle=shared.get('title')||shared.get('text');const sharedUrl=shared.get('url')||'';if(sharedTitle||sharedUrl){let list=get('resources');list.unshift({id:String(Date.now()),title:sharedTitle||sharedUrl,level:'Shared item',subject:'From another app',url:sharedUrl});put('resources',list);history.replaceState({},'',location.pathname);openSection('library');}
 let installPrompt=null;
 window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();installPrompt=e;$('installBtn').hidden=false;});
 $('installBtn').addEventListener('click',async()=>{if(!installPrompt){alert('Chrome menu (⋮) → Add to Home screen / Install app चुनें।');return;}installPrompt.prompt();await installPrompt.userChoice;installPrompt=null;$('installBtn').hidden=true;});
