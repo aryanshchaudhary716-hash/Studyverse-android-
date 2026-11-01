@@ -41,7 +41,7 @@ label{font-size:13px;color:var(--muted);display:block;margin:8px 0 5px}.two{disp
  <h2>आज की प्रगति</h2><div class="card"><div class="row between"><b id="progressText">0 / 0 tasks complete</b><span class="pill" id="progressPct">0%</span></div><div class="bar" style="margin-top:10px"><i id="progressBar" style="width:0%"></i></div></div>
 </section>
 <section id="files" class="section">
- <h2>📂 Smart AI File Manager</h2><p class="muted">फाइल चुनें — Studyverse नाम और उपलब्ध PDF टेक्स्ट के आधार पर संभावित विषय/क्लास का सुझाव देगा।</p>
+ <h2>📂 Smart File Manager</h2><p class="muted">फाइल चुनें — Studyverse फाइल के नाम से संभावित विषय/क्लास का फ़ोल्डर सुझाता है। यह AI/OCR स्कैन नहीं है।</p>
  <div class="card stack"><input id="fileInput" type="file" multiple accept=".pdf,.doc,.docx,.ppt,.pptx,.txt,.jpg,.png"><button onclick="document.getElementById('fileInput').click()">＋ फोन से फाइल चुनें</button><div class="notice">यह शुरुआती वेब वर्जन चुनी हुई फाइलों को इसी ब्राउज़र में रखता है। फोन की पूरी storage या WhatsApp folder को background में scan नहीं करता।</div></div>
  <h2>Library folders</h2><div id="folderList" class="stack"></div><h2>All imported files</h2><div class="notice">फाइलें इस डिवाइस के IndexedDB में वास्तविक फाइल के रूप में सेव होंगी। इन्हें बाद में डाउनलोड या हटाया जा सकता है।</div><div id="fileList"></div>
 </section>
@@ -95,7 +95,7 @@ function searchStudyWeb(mode){const q=[$('webLevel').value.trim(),$('webSubject'
 function addResource(){let a=get('resources');if(!$('resTitle').value.trim())return alert('Resource title लिखें');const url=$('resUrl').value.trim();if(url&&!safeUrl(url))return alert('कृपया सही http/https link डालें');a.push({id:String(Date.now()+Math.random()),title:$('resTitle').value.trim(),level:$('resLevel').value,subject:$('resSubject').value,url});put('resources',a);['resTitle','resLevel','resSubject','resUrl'].forEach(x=>$(x).value='');render();}
 function addVideo(){let a=get('videos');if(!$('videoTitle').value.trim()||!$('videoUrl').value.trim())return alert('नाम और URL दोनों लिखें');if(!safeUrl($('videoUrl').value.trim()))return alert('सही http/https video URL डालें');a.push({id:String(Date.now()+Math.random()),title:$('videoTitle').value.trim(),url:$('videoUrl').value.trim()});put('videos',a);$('videoTitle').value=$('videoUrl').value='';render();}
 function addTask(){let v=$('taskInput').value.trim();if(!v)return;let a=get('tasks');a.push({title:v,done:false});put('tasks',a);$('taskInput').value='';render();}
-function addNote(){let t=$('noteTitle').value.trim(),b=$('noteBody').value.trim();if(!t||!b)return alert('Title और notes लिखें');let a=get('notes');a.unshift({title:t,body:b,date:new Date().toLocaleDateString('en-IN')});put('notes',a);$('noteTitle').value=$('noteBody').value='';render();}
+function addNote(){let t=$('noteTitle').value.trim(),b=$('noteBody').value.trim();if(!t||!b)return alert('Title और notes लिखें');let a=get('notes');a.unshift({id:String(Date.now()+Math.random()),title:t,body:b,date:new Date().toLocaleDateString('en-IN')});put('notes',a);$('noteTitle').value=$('noteBody').value='';render();}
 function render(){
  const files=get('files'),folders=[...new Set(files.map(f=>f.folder))];
  $('folderList').innerHTML=folders.length?folders.map(f=>`<div class="listitem"><div>📁 <b>${esc(f)}</b><small>${files.filter(x=>x.folder===f).length} files</small></div><span class="pill">Auto category</span></div>`).join(''):'<div class="empty">अभी कोई फाइल नहीं। ऊपर से PDFs चुनें।</div>';
@@ -107,7 +107,7 @@ function render(){
  const done=tasks.filter(x=>x.done).length,pct=tasks.length?Math.round(done/tasks.length*100):0;$('progressText').textContent=`${done} / ${tasks.length} tasks complete`;$('progressPct').textContent=pct+'%';$('progressBar').style.width=pct+'%';
 }
 function removeItem(key,id){if(!confirm('इसे हटाएँ?'))return;put(key,get(key).filter(x=>String(x.id)!==String(id)));render();}
-function toggleTask(i,v){let a=get('tasks');a[i].done=v;put('tasks',a);render()}function removeTask(i){let a=get('tasks');a.splice(i,1);put('tasks',a);render()}
+function removeItem(key,id){if(!confirm('इसे हटाएँ?'))return;put(key,get(key).filter(x=>String(x.id)!==String(id)));render();}\nfunction toggleTask(i,v){let a=get('tasks');a[i].done=v;put('tasks',a);render()}function removeTask(i){let a=get('tasks');a.splice(i,1);put('tasks',a);render()}
 function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 function safeUrl(s){try{return ['http:','https:'].includes(new URL(s).protocol)}catch{return false}}
 function formatSize(n){return n<1024?n+' B':n<1048576?(n/1024).toFixed(1)+' KB':(n/1048576).toFixed(1)+' MB'}
