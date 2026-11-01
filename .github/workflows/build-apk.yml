@@ -21,6 +21,17 @@ jobs:
           java-version: 17
 
       - run: npm install
+
+      - name: Validate app JavaScript
+        run: |
+          node - <<'NODE'
+          const fs = require('fs');
+          const html = fs.readFileSync('index.html', 'utf8');
+          const scripts = [...html.matchAll(/<script>([\\s\\S]*?)<\\/script>/g)];
+          if (!scripts.length) throw new Error('No application script found');
+          for (const script of scripts) new Function(script[1]);
+          console.log('Validated', scripts.length, 'application script(s)');
+          NODE
       - run: npm run prepare:web
       - run: npx cap add android
       - run: npx cap sync android
