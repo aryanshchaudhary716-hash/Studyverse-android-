@@ -2,6 +2,11 @@
   "name": "studyverse-android",
   "version": "1.0.0",
   "private": true,
+  "description": "Studyverse universal learning hub Android app",
+  "scripts": {
+    "prepare:web": "node -e \"require('fs').mkdirSync('www',{recursive:true}); for (const f of ['index.html','manifest.webmanifest','sw.js','icon.svg']) require('fs').copyFileSync(f,'www/'+f)\"",
+    "build:android": "npm run prepare:web && cap sync android"
+  },
   "dependencies": {
     "@capacitor/android": "^6.2.1",
     "@capacitor/core": "^6.2.1"
